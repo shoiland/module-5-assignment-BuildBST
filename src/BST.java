@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 /**
  * Your implementation of a BST.
  */
@@ -31,12 +33,16 @@ public class BST<T extends Comparable<? super T>> {
      */
     public void add(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (data == null){
+            throw new IllegalArgumentException();
+        }
         root = recursionAdd(root, data);
 
     }
 
     private BSTNode<T> recursionAdd(BSTNode<T> current, T data){
         if (current == null) {
+            this.size++;
             return new BSTNode<>(data);
         } else if (current.getData().compareTo(data) > 0){
             current.setLeft(recursionAdd(current.getLeft(), data));
@@ -73,27 +79,54 @@ public class BST<T extends Comparable<? super T>> {
      * @throws java.lang.IllegalArgumentException If data is null.
      * @throws java.util.NoSuchElementException   If the data is not in the tree.
      */
-    public void remove(T data) {
+    public T remove(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)
-        root = recursionRemove(root, data);
+        if (data == null){
+            throw new IllegalArgumentException();
+        }
+        BSTNode<T> dummy = new BSTNode<>(data);
+        root = recursionRemove(root, data, dummy);
+        if (dummy.getData() == null){
+            throw new NoSuchElementException();
+        }
+        return dummy.getData();
     }
 
-    private BSTNode<T> recursionRemove(BSTNode<T> current, T data){
+    private BSTNode<T> recursionRemove(BSTNode<T> current, T data, BSTNode<T> dummy){
         if (current == null){
+            dummy.setData(null);
             return null;
         } else if (current.getData().compareTo(data) > 0){
-            current.setLeft(recursionRemove(current.getLeft(), data));
+            current.setLeft(recursionRemove(current.getLeft(), data, dummy));
         } else if (current.getData().compareTo(data) < 0){
-            current.setRight(recursionRemove(current.getRight(), data));
+            current.setRight(recursionRemove(current.getRight(), data, dummy));
         } else {
-            return null;
+            dummy.setData(current.getData());
+            size--;
+            if (current.getRight() == null && current.getLeft() == null){
+                return null;
+            } else if (current.getLeft() != null && current.getRight() == null){
+                return current.getLeft();
+            } else if (current.getRight() != null && current.getLeft() == null){
+                return current.getRight();
+            } else {
+                BSTNode<T> dummy2 = new BSTNode<>(data);
+                current.setRight(removeSuccessor(current.getRight(), dummy2));
+                current.setData(dummy2.getData());
+            }
         }
         return current;
     }
 
-//    private BSTNode<T> removeSuccessor(BSTNode<T> curr, BSTNode<T> dummy){
-//
-//    }
+    private BSTNode<T> removeSuccessor(BSTNode<T> curr, BSTNode<T> dummy){
+        if (curr.getLeft() != null){
+            curr.setLeft(removeSuccessor(curr.getLeft(), dummy));
+        } else {
+            dummy.setData(curr.getData());
+            return curr.getRight();
+        }
+        return curr;
+    }
 
     /**
      * Returns the root of the tree.

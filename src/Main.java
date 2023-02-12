@@ -1,17 +1,16 @@
 public class Main {
     public static void main(String[] args) {
         BST<Integer> numbers = new BST<>();
-        numbers.add(35);
-        numbers.add(27);
-        numbers.add(22);
-        numbers.add(55);
-        numbers.add(46);
-        numbers.add(57);
-        numbers.add(32);
-        System.out.println("hey");
-        numbers.remove(34);
-        numbers.remove(32);
-        System.out.println("hey");
+        numbers.add(50);
+        numbers.add(25);
+        numbers.add(100);
+        numbers.add(10);
+        numbers.add(75);
+        numbers.add(125);
+        numbers.add(90);
+        numbers.add(115);
+        numbers.add(117);
+        System.out.println(numbers.remove(100));
 
     }
 }
